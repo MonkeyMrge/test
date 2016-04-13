@@ -17,6 +17,6 @@ public interface Participator {
 	void setPrepareStatus(Status prepareStatus);
 
 	void setCommitStatus(Status commitStatus);
-	
+
 	void setRollBackStatus(Status rollBackStatus);
 }

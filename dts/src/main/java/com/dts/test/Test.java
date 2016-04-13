@@ -10,7 +10,7 @@ import com.dts.tcc.impl.TransactionManagerImpl;
 public class Test {
 	public static void main(String[] args) {
 
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 3; i++) {
 			new Thread(new Runnable() {
 
 				@Override
@@ -24,12 +24,11 @@ public class Test {
 						transaction.enListParticipator(new CouponMock(name));
 						transaction.enListParticipator(new PointMock(name));
 						transaction.commit();
-					} catch (Throwable cause) {
+					} catch (Exception e) {
 						transactionManager.rollBack();
 					}
 				}
 			}).start();
-
 		}
 
 	}

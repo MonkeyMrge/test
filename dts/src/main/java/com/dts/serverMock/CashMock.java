@@ -11,4 +11,10 @@ public class CashMock extends MockServer {
 		System.out.println(Thread.currentThread().getName() + ": --->Cash Mock doSth");
 	}
 
+	@Override
+	public void doRoll() throws Exception {
+		System.out.println(Thread.currentThread().getName() + ": --->Cash Mock doRoll");
+		
+	}
+
 }

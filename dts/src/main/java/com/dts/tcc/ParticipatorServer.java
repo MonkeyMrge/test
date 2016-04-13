@@ -11,7 +11,6 @@ public abstract class ParticipatorServer implements Participator {
 		this.name = name;
 	}
 
-
 	public Status getPrepareStatus() {
 		return prepareStatus;
 	}
@@ -27,7 +26,6 @@ public abstract class ParticipatorServer implements Participator {
 	public void setCommitStatus(Status commitStatus) {
 		this.commitStatus = commitStatus;
 	}
-
 
 	public Status getRollBackStatus() {
 		return rollBackStatus;

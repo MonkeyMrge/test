@@ -12,19 +12,21 @@ import com.dts.tcc.Status;
 import com.dts.tcc.Transaction;
 
 public class TransactionImpl implements Transaction {
-	Logger logger = Logger.getLogger(TransactionImpl.class);
+	private Logger logger = Logger.getLogger(TransactionImpl.class);
 
-	List<Participator> taskList = new ArrayList<Participator>();
+	private List<Participator> taskList;
 
 	@Override
 	public void enListParticipator(Participator participator) throws Exception {
+		if (taskList == null)
+			taskList = new ArrayList<Participator>();
 		taskList.add(participator);
 	}
 
 	@Override
 	public void deListParticipator(Participator participator) throws Exception {
 		if (taskList.isEmpty()) {
-			logger.debug(taskList + ", taskList is Empty!");
+			logger.warn(taskList + ", taskList is Empty!");
 			throw new IllegalArgumentException();
 		} else if (!taskList.contains(participator)) {
 			logger.debug(participator + "is not involved in tasklist: " + taskList);
@@ -36,23 +38,23 @@ public class TransactionImpl implements Transaction {
 	@Override
 	public void commit() throws Exception {
 		if (taskList.isEmpty()) {
-			logger.debug(taskList + ", taskList is Empty!");
+			logger.warn(taskList + ", taskList is Empty!");
 			throw new IllegalArgumentException();
 		}
 		for (Participator participator : taskList) {
 			participator.prepare();
 			if (!participator.getPrepareStatus().equals(Status.Success)) {
-				System.out.println(Thread.currentThread().getName() + " prepare failure!");
+				System.out.println(participator + " prepare failure!");
 				for (int i = 0; i < ConfigTable.PREPARE_RETRY_TIME; i++) {
-					System.out.println(Thread.currentThread().getName() + " " + (i + 1) + " prepare retry:");
+					System.out.println(participator + " " + (i + 1) + " prepare retry:");
 					participator.prepare();
 					if (participator.getPrepareStatus().equals(Status.Success))
 						break;
-					System.out.println(Thread.currentThread().getName() + " " + (i + 1) + " prepare failure");
-
+					System.out.println(participator + " " + (i + 1) + " prepare failure");
 				}
 				if (!participator.getPrepareStatus().equals(Status.Success)) {
-					logger.debug(participator + " prepare failure out of times");
+					// logger.error(participator + " prepare failure out of
+					// times");
 					throw new RetryOutException();
 				}
 			}
@@ -60,29 +62,32 @@ public class TransactionImpl implements Transaction {
 		for (Participator participator : taskList) {
 			participator.commit();
 			if (!participator.getCommitStatus().equals(Status.Success)) {
-				System.out.println(Thread.currentThread().getName() + " commmit failure!");
+				System.out.println(participator + " commmit failure!");
 				for (int i = 0; i < ConfigTable.COMMIT_RETRY_TIME; i++) {
-					System.out.println(Thread.currentThread().getName() + " " + (i + 1) + " commit retry:");
+					System.out.println(participator + " " + (i + 1) + " commit retry:");
 					participator.commit();
 					if (participator.getCommitStatus().equals(Status.Success))
 						break;
-					System.out.println(Thread.currentThread().getName() + " " + (i + 1) + " commit failure");
+					System.out.println(participator + " " + (i + 1) + " commit failure");
 				}
 				if (!participator.getCommitStatus().equals(Status.Success)) {
 					logger.debug(participator + " commit failure out of times");
+					System.out.println(participator + " commit failure out of times");
 					throw new RetryOutException();
 				}
 			}
 		}
+		System.out.println(Thread.currentThread().getName() + " Transaction success!");
 	}
 
 	@Override
 	public void rollBack() throws Exception {
-		if (taskList.isEmpty())
+		if (taskList.isEmpty()) {
 			throw new IllegalArgumentException();
+		}
 		for (Participator participator : taskList) {
-			if (participator.getRollBackStatus().equals(Status.Success)) {
-				logger.info(participator + " is rolling back!");
+			if (participator.getCommitStatus().equals(Status.Success)) {
+				// logger.info(participator + " is rolling back!");
 				participator.rollBack();
 				if (!participator.getRollBackStatus().equals(Status.Success)) {
 					System.out.println(participator + " rollBack failure!");

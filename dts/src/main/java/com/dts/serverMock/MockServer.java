@@ -15,7 +15,7 @@ public abstract class MockServer extends ParticipatorServer {
 
 	public void prepare() throws Exception {
 		Thread.sleep(new Random().nextInt(500));
-		if (new Random().nextInt(10) % 10 != 1) {
+		if (new Random().nextInt(10) % 5 != 1) {
 			prepareStatus = Status.Success;
 			System.out.println(name + " is prepared!");
 		} else {
@@ -26,7 +26,7 @@ public abstract class MockServer extends ParticipatorServer {
 
 	public void commit() throws Exception {
 		Thread.sleep(new Random().nextInt(500));
-		if (new Random().nextInt(10) % 10 != 1) {
+		if (new Random().nextInt(10) % 5 != 1) {
 			setCommitStatus(Status.Success);
 			doSth();
 			System.out.println(name + " is committed!");
@@ -38,6 +38,14 @@ public abstract class MockServer extends ParticipatorServer {
 
 	public void rollBack() throws Exception {
 		Thread.sleep(new Random().nextInt(500));
-		System.out.println(name + " is rollBacked!");
+		if (new Random().nextInt(10) % 2 != 1) {
+			setRollBackStatus(Status.Success);
+			doRoll();
+			System.out.println(name + " is rollBack Success!");
+		} else {
+			setRollBackStatus(Status.Abort);
+			System.out.println(name + " is rollBack failure!");
+		}
 	}
+	public abstract void doRoll() throws Exception;
 }

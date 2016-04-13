@@ -11,4 +11,9 @@ public class PointMock extends MockServer {
 		System.out.println(Thread.currentThread().getName() + ": --->PointMock dosth");
 	}
 
+	@Override
+	public void doRoll() throws Exception {
+		System.out.println(Thread.currentThread().getName() + ": --->PointMock roll");
+	}
+
 }

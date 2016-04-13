@@ -11,4 +11,10 @@ public class CouponMock extends MockServer {
 		System.out.println(Thread.currentThread().getName() + ": --->CouponMock dosth");
 	}
 
+	@Override
+	public void doRoll() throws Exception {
+		System.out.println(Thread.currentThread().getName() + ": --->CouponMock doRoll");
+		
+	}
+
 }
