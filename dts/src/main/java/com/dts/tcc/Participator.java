@@ -12,7 +12,11 @@ public interface Participator {
 
 	Status getCommitStatus();
 
-	void setPrepareStatus(Status status);
+	Status getRollBackStatus();
 
-	void setCommitStatus(Status status);
+	void setPrepareStatus(Status prepareStatus);
+
+	void setCommitStatus(Status commitStatus);
+	
+	void setRollBackStatus(Status rollBackStatus);
 }

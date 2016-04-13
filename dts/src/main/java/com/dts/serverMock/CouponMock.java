@@ -1,8 +1,6 @@
 package com.dts.serverMock;
 
-import com.dts.tcc.ParticipatorServer;
-
-public class CouponMock extends ParticipatorServer {
+public class CouponMock extends MockServer {
 
 	public CouponMock(String name) {
 		super(name + " CouponMock");

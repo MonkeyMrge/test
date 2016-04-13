@@ -1,8 +1,6 @@
 package com.dts.serverMock;
 
-import com.dts.tcc.ParticipatorServer;
-
-public class PointMock extends ParticipatorServer {
+public class PointMock extends MockServer {
 
 	public PointMock(String name) {
 		super(name + " PointMock");

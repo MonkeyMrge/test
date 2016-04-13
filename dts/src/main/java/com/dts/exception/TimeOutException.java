@@ -1,4 +1,4 @@
-package com.dts.Exception;
+package com.dts.exception;
 
 public class TimeOutException extends Exception {
 

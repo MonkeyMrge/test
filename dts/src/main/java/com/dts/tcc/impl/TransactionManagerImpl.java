@@ -37,6 +37,8 @@ public class TransactionManagerImpl implements TransactionManager {
 	public void commit() {
 		try {
 			transactionLocal.get().commit();
+		} catch (IllegalArgumentException e) {
+			System.out.println("TaskList is empty, Commit abort!");
 		} catch (Exception e) {
 			rollBack();
 		}

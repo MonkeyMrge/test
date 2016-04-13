@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.dts.Exception.RetryOutException;
 import com.dts.config.ConfigTable;
+import com.dts.exception.RetryOutException;
 import com.dts.tcc.Participator;
 import com.dts.tcc.Status;
 import com.dts.tcc.Transaction;
@@ -80,8 +80,27 @@ public class TransactionImpl implements Transaction {
 	public void rollBack() throws Exception {
 		if (taskList.isEmpty())
 			throw new IllegalArgumentException();
-		System.out.println(Thread.currentThread().getName() + " is rollBack!");
-
+		for (Participator participator : taskList) {
+			if (participator.getRollBackStatus().equals(Status.Success)) {
+				logger.info(participator + " is rolling back!");
+				participator.rollBack();
+				if (!participator.getRollBackStatus().equals(Status.Success)) {
+					System.out.println(participator + " rollBack failure!");
+					for (int i = 0; i < ConfigTable.ROLLBACK_RETRY_TIME; i++) {
+						System.out.println(participator + " " + (i + 1) + " rollBack retry:");
+						participator.rollBack();
+						if (participator.getRollBackStatus().equals(Status.Success))
+							break;
+						System.out.println(participator + " " + (i + 1) + " rollBack failure");
+					}
+					if (!participator.getRollBackStatus().equals(Status.Success)) {
+						logger.debug(participator + " rollBack failure out of times");
+						throw new RetryOutException(
+								participator + "RollBack retry " + ConfigTable.ROLLBACK_RETRY_TIME + " times failure");
+					}
+				}
+			}
+		}
 	}
 
 }
